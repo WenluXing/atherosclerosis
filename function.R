@@ -329,3 +329,59 @@ ggsave(file.path(output.dir, "dotplot_lncRNA-marker_cor.pdf"),
        plot = p,
        height = 5,
        width = 8)
+
+
+##
+lncRNA <- read_csv("./results-V23-Figure/Fig1/lncRNA/real_exist_lncRNA.csv")
+lncRNA <- lncRNA$lncRNA
+
+adata_1 <- read_csv("./results-V7-scenic/End/tfs_targer.tsv")
+adata_1 <- adata_1 %>% filter(target_gene %in% lncRNA) %>% mutate(cell_type="Endothelial")
+
+adata_2 <- read_csv("./results-V7-scenic/SMC/tfs_targer.tsv")
+adata_2 <- adata_2 %>% filter(target_gene %in% lncRNA)%>% mutate(cell_type="SMC")
+
+adata_3 <- read_csv("./results-V7-scenic/Mac/tfs_targer.tsv")
+adata_3 <- adata_3 %>% filter(target_gene %in% lncRNA)%>% mutate(cell_type="Macrophage")
+
+adata_4 <- read_csv("./results-V7-scenic/Fib/tfs_targer.tsv")
+adata_4 <- adata_4 %>% filter(target_gene %in% lncRNA)%>% mutate(cell_type="Fibroblast")
+
+adata <- rbind(adata_1,adata_2,adata_3,adata_4)
+          
+scenic <- c("KLF2","KLF3","KLF4","KLF6", "KLF14","GATA2",
+            "EGR1","TAF1","SPI1","JUNB","OCT4", "NFKB1","NFKB2","ETS2", 
+            "NR2F1","IRF1","FOS","HIF1A" )
+lncRNA <- c("MALAT1","NEAT1","MIR100HG","PCAT19","SNHG8","SNHG9","FTX",
+            "XIST","SNHG5","SNHG6","SNHG16","SNHG32","SNHG29","GAS5","MEG3","KCNQ1OT1",
+            "H19","ZFAS1","PHF1","NORAD","CYTOR","DANCR","SENCR","MEXIS","CARMN","LUCAT1",
+            "CDKN2B-AS1","EPB41L4A-AS1","SERTAD4-AS1","NEXN-AS1","OIP5-AS1","CEBPB-AS1","NEXN-AS1",
+            "PVT1","LINC-PINT","LINC00623","LINC00863","ADAMTS9-AS2","C2orf27A")
+
+data <- adata %>%
+  filter(target_gene %in% lncRNA) %>%
+  filter(tf %in% scenic)
+data$cell_type <- factor(data$cell_type, levels = c("Endothelial","SMC",'Fibroblast',"Macrophage"))
+data$tf <- factor(data$tf, levels = scenic)
+
+p <- ggplot(data, aes(target_gene, tf))+
+  geom_point(aes(fill=cell_type),color="black",size=4,shape=21,alpha=0.9,stroke=0.5)+
+  theme_bw()+
+  theme(axis.text.x = element_text(size = 8, face = "italic", angle = 90, vjust=0.5, hjust=1, color = "black"),
+        axis.text.y = element_text(size = 8, color = "black"),
+        axis.line = element_line(size = 0.1, color = "black"),
+        axis.ticks = element_line(size = 0.3, color = "black"),
+        axis.title = element_blank(),
+        plot.title=element_text(size = 8, color = "black"),
+        panel.border = element_rect(color = "black", size = 0.3, fill = NA),
+        panel.grid =element_blank(),
+        panel.spacing.x = unit(0, "pt"))+  #修改分面面板间距
+  facet_grid(. ~cell_type,
+             space = "free",
+             scales = "free") +
+  NoLegend()
+p
+ggsave(file.path(output.dir,"tfs.pdf"),
+  plot = p,
+  height = 3.6,
+  width = 9.5)
