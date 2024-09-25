@@ -1,7 +1,7 @@
 #### Load packages ----
 library(Seurat)
-source("~/share/custom_function.R")
-source("~/share/custom_plot_function.R")
+source("~/share/20220802_scrna-m6A/custom_function.R")
+source("~/share/20220802_scrna-m6A/custom_plot_function.R")
 output.dir <- paste0("~/results-V24-Figure/Fig6") 
 selected_cell_type <- "Macrophage"
 
