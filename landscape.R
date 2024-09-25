@@ -1,8 +1,8 @@
-##
+#### Load packages ----
 library(Seurat)
 library(tidyverse)
 library(ggplot2)
- 
+
 ##
 seurat.obj <- readRDS("./anno/harmony_anno_20_0.8.rds")
 a <- read.csv("./results-V23-Figure/Fig1/lncRNA/4-final_lncRNA.csv")
