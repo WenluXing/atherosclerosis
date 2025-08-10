@@ -1,7 +1,7 @@
 library(Seurat)
 library(tidyverse)
 set.seed(717)
-merged <- readRDS("~/data/merged_union_filter.rds")
+merged <- readRDS("~/practice5-Atherosis/data/merged_union_filter.rds")
 
 ##
 merged <- PercentageFeatureSet(merged,
@@ -45,7 +45,7 @@ merged <- merged |>
   RunUMAP(dims = 1:20, reduction = "harmony") |>
   FindNeighbors(dims = 1:20, reduction = "harmony") |>
   FindClusters(resolution = c(0.8))
-saveRDS(merged,"/home/xingwl/practice5-Atherosis/noncoding/anno/anno_reduction_20_0.8.rds")
+saveRDS(merged,"~/practice5-Atherosis/noncoding/anno/anno_reduction_20_0.8.rds")
 
 #
 DimPlot(merged,label = T,split.by = "orig.ident",ncol = 3,reduction = "umap")
@@ -98,7 +98,7 @@ Idents(merged) <- merged$seurat_clusters
 top.markers <- markers %>%
   group_by(cluster) %>%
   slice_max(n = 3, order_by = avg_log2FC)
-write.csv(markers,"~/anno/markers_afteranno_20_0.8.csv", quote = F, row.names = F)
+write.csv(markers,"~/practice5-Atherosis/noncoding/anno/markers_afteranno_20_0.8.csv", quote = F, row.names = F)
 
 DotPlot(merged, features = unique(top.markers$gene),
         col.min = 0) + theme(axis.text.x = element_text(angle = 45,hjust = 1,vjust = 1))
@@ -144,4 +144,4 @@ DimPlot(merged,
         cols = c("#E64B35FF","#4DBBD5FF", "#00A087FF", "#3C5488FF", "#F39B7FFF", "#8491B4FF",
                  "#91D1C2FF", "#DC0000FF", "#7E6148FF", "#B09C85FF","#A2005699","#9467BDFF","#42B54099")) 
 saveRDS(merged,
-        file = "~/anno/harmony_anno_20_0.8.rds")
+        file = "~/practice5-Atherosis/noncoding/anno/harmony_anno_20_0.8.rds")
